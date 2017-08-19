@@ -24,5 +24,5 @@ This bot uses the OpenWeatherMap API, http://openweathermap.org for forecasts.
 #### Supported languages:
 Spanish
 
-### TomorrowBot
+## TomorrowBot
 Design in process... :)
