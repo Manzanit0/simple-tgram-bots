@@ -1,3 +1,5 @@
+'use strict';
+
 // Telegraf based framework.
 const { Composer } = require('micro-bot');
 const app = new Composer();
