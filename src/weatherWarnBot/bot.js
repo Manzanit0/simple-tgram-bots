@@ -1,64 +1,48 @@
 'use strict';
 
 // Telegraf based framework.
-const { Composer } = require('micro-bot'),
-    { CronJob } = require('cron');
+const { Composer } = require('micro-bot');
 
 // Local files.
-const templates = require('./helpers/templates'),
+const cron = require('./helpers/cron-scheduler'),
+    templates = require('./helpers/templates'),
     weather = require('./helpers/weather');
 
-const bot = new Composer(),
-    jobs = new Map();
+const bot = new Composer();
+const jobs = new Map(); // TODO: change the map for a MongoDB.
 
-const configureCron = (cronTime, location, reply) =>
-    new CronJob(cronTime, async () => {
-        const result = await weather.getForecast(location.city, location.code);
-
-        try {
-            // If the weather isn't clear, notify the group.
-            if (!weather.isTomorrowClear(result)) {
-                reply(weather.getFormattedForecastMessage(result));
-            }
-        } catch (err) {
-            reply(templates.errorMessage);
-        }
-
-        // This runs when the job is terminated.
-    }, () => {
-        reply(templates.unschedule(location.city));
-    },
-    true, // Starts the job inmediatly.
-    'Europe/Madrid'
-    );
+const warnOnWeatherChange = async (city, countryCode, reply) => {
+    const msg = await weather.getForecastWarnMessage(city, countryCode);
+    // The message will be null if there are no significant changes in weather.
+    if (msg !== null) {
+        reply(msg);
+    }
+};
 
 bot.hears(/\/schedule (\S+) (\S+)/, ({ match, reply }) => {
+    const job = cron.schedule('00 07 18 * * 1-7',
+        () => warnOnWeatherChange(match[1], match[2], reply));
 
-    // Extract location from the command.
-    const location = { city: match[1], code: match[2] };
-
-    const job = configureCron('00 00 20 * * 1-7', location, reply);
-    job.start();
     jobs.set(match[1], job);
+    // TODO: save the job in DB
 
-    return reply(templates.schedule(location.city));
+    return reply(templates.schedule(match[1]));
 });
 
-bot.hears(/\/unschedule (\S+) (\S+)/, ({ match }) => {
-    jobs.get(match[1]).stop();
-    jobs.delete(match[1]);
+bot.hears(/\/unschedule (\S+) (\S+)/, ({ match, reply }) => {
+    const job = jobs.get(match[1]);
+    // TODO: search for job in DB.
+
+    cron.unschedule(job);
+
+    return reply(templates.unschedule(match[1]));
 });
 
-bot.hears(/\/forecast (\S+) (\S+)/, async ({ match, reply }) => {
-    try {
-        const result = await weather.getForecast(match[1], match[2]);
-        reply(weather.getFormattedForecastMessage(result));
-    } catch (err) {
-        reply(templates.errorMessage);
-    }
-});
+bot.hears(/\/forecast (\S+) (\S+)/, async ({ match, reply }) =>
+    reply(await weather.getForecastMessage(match[1], match[2], weather.daysEnum.TOMORROW)));
 
-bot.hears(/\/help/, ({ reply }) => reply(templates.help));
+bot.hears(/\/help/, ({ reply }) =>
+    reply(templates.help));
 
 // Export bot handler
 module.exports = bot;

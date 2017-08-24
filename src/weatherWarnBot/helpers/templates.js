@@ -1,4 +1,5 @@
 'use strict';
+const UNIX_DT_TRANSFORM_RATIO = 1000;
 
 const help =
     `
@@ -14,11 +15,11 @@ const help =
 const weatherReport = (forecast, cityName) =>
     `🚩 ${cityName}
     - - - - - - - - - - - - - - - - - - - - - -
-    🕘 ${forecast.dt_txt}
+    🕘 ${new Date(forecast.dt * UNIX_DT_TRANSFORM_RATIO).toDateString()}
     🌀 ${forecast.weather[0].description}
-    🔰 ${forecast.main.temp_min}°C - ${forecast.main.temp_max}ºC
-    💧 ${forecast.main.humidity}%
-    💨 ${forecast.wind.speed} m/s
+    🔰 ${forecast.temp.min}°C - ${forecast.temp.max}ºC
+    💧 ${forecast.humidity}%
+    💨 ${forecast.speed} m/s
     - - - - - - - - - - - - - - - - - - - - - -
     `;
 
