@@ -20,7 +20,7 @@ const warnOnWeatherChange = async (city, countryCode, reply) => {
 };
 
 bot.hears(/\/schedule (\S+) (\S+)/, ({ match, reply }) => {
-    const job = cron.schedule('00 07 18 * * 1-7',
+    const job = cron.schedule('00 00 20 * * 1-7',
         () => warnOnWeatherChange(match[1], match[2], reply));
 
     jobs.set(match[1], job);
