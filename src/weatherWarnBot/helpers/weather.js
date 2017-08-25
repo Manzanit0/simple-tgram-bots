@@ -45,13 +45,13 @@ const getForecastWarnMessage = async (city, countryCode) => {
     const [ weatherCode ] = forecast.weather[0].id.toString();
 
     let message = null;
-    //if (weatherCode === '8' || weatherCode === '9') { // TODO: uncomment this. It's for debugging purpouses.
+    if (weatherCode === '8' || weatherCode === '9') {
         try {
             message = templates.weatherReport(forecast, city);
         } catch (err) {
             message = templates.errorMessage;
         }
-    //}
+    }
 
     return message;
 };
