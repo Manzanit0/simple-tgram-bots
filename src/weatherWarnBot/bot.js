@@ -19,6 +19,7 @@ const warnOnWeatherChange = async (city, countryCode, reply) => {
     }
 };
 
+// TODO: make the bot identify multiple-word cities, i.e.: New York.
 bot.hears(/\/schedule (\S+) (\S+)/, ({ match, reply }) => {
     const job = cron.schedule('00 00 20 * * 1-7',
         () => warnOnWeatherChange(match[1], match[2], reply));

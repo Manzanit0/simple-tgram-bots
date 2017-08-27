@@ -24,5 +24,11 @@ This bot uses the OpenWeatherMap API, http://openweathermap.org for forecasts.
 #### Supported languages:
 Spanish
 
+#### Roadmap/Backlog
+* *(Fix)* Enable the bot to recognize a city with multiple words.
+* Implement custom keyboard as well as the commands.
+* Custom notification time instead of the default (20:00h UTC+2).
+* Visualize scheduled notifications.
+
 ## TomorrowBot
 Design in process... :)
