@@ -5,7 +5,8 @@
   "main": "src/weatherWarnBot/bot.js",
   "scripts": {
     "start": "micro-bot",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "littleAppleBot": "micro-bot src/littleAppleBot/bot.js",
+    "weatherWarnBot": "micro-bot src/weatherWarnBot/bot.js"
   },
   "repository": {
     "type": "git",
