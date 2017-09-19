@@ -45,7 +45,8 @@ const getForecastWarnMessage = async (city, countryCode) => {
     const [ weatherCode ] = forecast.weather[0].id.toString();
 
     let message = null;
-    if (weatherCode === '8' || weatherCode === '9') {
+    // Note: Codes such as 8xx represent clear sky. https://openweathermap.org/weather-conditions
+    if (weatherCode !== '8') {
         try {
             message = templates.weatherReport(forecast, city);
         } catch (err) {
